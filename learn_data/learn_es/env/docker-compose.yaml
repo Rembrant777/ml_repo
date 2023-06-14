@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   es01:
-    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2"
+    image: "docker.io/elasticsearch:8.8.0"
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -12,8 +12,15 @@ services:
       cluster.name: mycluster
       bootstrap.memory_lock: "true"
       ES_JAVA_OPTS: -Xms256m -Xmx256m
+      ELASTIC_PASSWORD: es123
+      xpack.security.enabled: false
+      xpack.security.audit.enabled: false
+      cluster.routing.allocation.disk.threshold_enabled: true
+      cluster.routing.allocation.disk.watermark.low: 65%
+      cluster.routing.allocation.disk.watermark.high: 70%
     volumes:
       - "./es-data-es01:/usr/share/elasticsearch/data"
+      - "./es-data-es01-log:/usr/share/elasticsearch/logs"
     ulimits:
       memlock:
         soft: -1
@@ -24,7 +31,7 @@ services:
       timeout: 10s
       retries: 120
   es02:
-    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2"
+    image: "docker.io/elasticsearch:8.8.0"
     ports:
       - "9201:9200"
       - "9301:9300"
@@ -35,8 +42,15 @@ services:
       cluster.name: mycluster
       bootstrap.memory_lock: "true"
       ES_JAVA_OPTS: -Xms256m -Xmx256m
+      ELASTIC_PASSWORD: es123
+      xpack.security.enabled: false
+      xpack.security.audit.enabled: false
+      cluster.routing.allocation.disk.threshold_enabled: true
+      cluster.routing.allocation.disk.watermark.low: 65%
+      cluster.routing.allocation.disk.watermark.high: 70%
     volumes:
       - "./es-data-es02:/usr/share/elasticsearch/data"
+      - "./es-data-es02-log:/usr/share/elasticsearch/logs"
     ulimits:
       memlock:
         soft: -1
@@ -47,7 +61,7 @@ services:
       timeout: 10s
       retries: 120
   es03:
-    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2"
+    image: "docker.io/elasticsearch:8.8.0"
     ports:
       - "9202:9200"
       - "9303:9300"
@@ -58,8 +72,15 @@ services:
       cluster.name: mycluster
       bootstrap.memory_lock: "true"
       ES_JAVA_OPTS: -Xms256m -Xmx256m
+      ELASTIC_PASSWORD: es123
+      xpack.security.enabled: false
+      xpack.security.audit.enabled: false
+      cluster.routing.allocation.disk.threshold_enabled: true
+      cluster.routing.allocation.disk.watermark.low: 65%
+      cluster.routing.allocation.disk.watermark.high: 70%
     volumes:
       - "./es-data-es03:/usr/share/elasticsearch/data"
+      - "./es-data-es03-log:/usr/share/elasticsearch/logs"
     ulimits:
       memlock:
         soft: -1
@@ -70,7 +91,7 @@ services:
       timeout: 10s
       retries: 120
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.10.2
+    image: docker.io/library/kibana:8.8.0
     depends_on:
       es01:
         condition: service_healthy
@@ -81,8 +102,11 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - 'ELASTICSEARCH_HOSTS=["http://es01:9200","http://es02:9200","http://es03:9200"]'
+      - 'ELASTICSEARCH_HOSTS=["http://es01:9200","http://es02:9201","http://es03:9202"]'
 volumes:
   es-data-es01:  
   es-data-es02:  
-  es-data-es03:  
+  es-data-es03: 
+  es-data-es01-log: 
+  es-data-es02-log: 
+  es-data-es03-log: 
