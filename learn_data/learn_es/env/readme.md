@@ -35,3 +35,7 @@ docker-compose start
 ```
 docker-compose down 
 ```
+### references
+
+* when version updated to 8.8.0 required security configs 
+[ref](https://umasrinivask.medium.com/dockerize-elasticsearch-kibana-with-x-packs-security-237589acb3fd)
